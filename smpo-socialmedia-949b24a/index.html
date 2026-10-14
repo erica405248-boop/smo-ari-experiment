@@ -1,0 +1,250 @@
+<html lang="en"><!DOCTYPE html>
+
+ <!-- 
+/* 
+  
+This document contains all instructions which appear in the paradigm, along with some basic functionality. You can change all text by following the instructions below. 
+
+If you don't have experience with programming, it is important that you alter only the plain text, as indicated in the instructions, and leave any functional elements intact.
+*/ 
+--> 
+
+<meta charset="utf-8">
+<title>Intro</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Stylesheets -->
+<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="http://cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.10/alertify.core.css" rel="stylesheet">
+<link href="http://cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.10/alertify.default.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+
+<!-- For IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
+  </script>
+<![endif]-->
+
+<!-- Javascript -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.3.0/mustache.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.10/alertify.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/masonry/2.1.08/jquery.masonry.min.js"></script>
+<script src="shortcut.js"></script>
+<script src="main.js"></script>
+<script type="text/javascript" src="profiles.json"></script>
+
+</head>
+
+<body oncontextmenu="return false;">
+<div class="container">
+
+
+
+<div id="intro" style="display:none;" class="instr">
+ <!-- 
+/* 
+  
+**Intro**
+---------
+You can edit this text using basic HTML elements for styling (e.g., <br>, <h3>).
+
+*/ 
+--> <h3>소셜 네트워크 활동 안내</h3>
+
+ 잠시 후 다른 참가자들과 함께 간단한 소셜 네트워크 온라인 활동에 참여하게 됩니다. <br>
+ 다른 참가자들과는 인터넷을 통해 연결됩니다.
+  <br><br>
+  먼저 모든 참가자는 활동에서 사용할 '프로필 이미지'를 선택하고, <br>
+  자신을 소개하는 짧은 글을 작성하게 됩니다.
+  <br><br>
+  이후 약 3분 동안 다른 참가자들의 소개글을 읽고, <br>
+  서로의 글에 '좋아요'를 눌러 반응할 수 있습니다. <br>
+  <br><br>
+  구체적인 활동 방법은 다음 화면에서 안내해드리겠습니다. <br><br>
+  <b>여기까지 내용을 확인하셨다면 아래 '계속' 버튼을 눌러주세요. </b><br><br>
+  <button type="submit" id="submit_intro">계속</button>
+</div>
+
+
+
+<div id="name" style="display:none;" class="instr">
+<!-- 
+/* 
+  
+**Username**
+---------
+You can edit the instructions text for entering usernames below.
+
+*/ 
+-->
+	<h3>사용할 이름을 입력해주세요</h3>
+	온라인 활동에서 다른 참가자들에게 표시될 이름을 입력해주세요. <br><br>
+	실명 대신 닉네임이나 이니셜을 사용할 수 있습니다. <br><br>
+
+	<input type="text" id="username"  autocomplete="off" /><br>	<br>
+	<button type="submit"  id="submit_username">확인</button>
+</div>
+
+
+
+<div id="avatar" style="display:none;">	
+<!-- 
+/* 
+  
+**Avatar choice**
+---------
+You can edit the instructions text. The text "Your choice of avatar will not be recorded or analyzed" depends on whether you record the choice of avatar.
+
+*/ 
+-->	<h3>프로필 이미지를 선택해주세요</h3>
+	온라인 활동에서 나를 나타낼 프로필 이미지를 하나 선택해주세요. <br>
+        선택한 프로필 이미지는 활동 중 다른 참가자들에게 표시됩니다.
+	<br><br>
+	<div class="avatars"></div>
+	<br><button type="submit"  id="submit_avatar">확인</button>
+	<br><br>
+</div>	
+
+
+<div id="text" style="display:none;" class="instr">	
+<!-- 
+/* 
+  
+**Description entry**
+---------
+You can edit the instructions text. 
+
+*/ 
+-->	<h3>자기소개를 작성해주세요</h3>
+	다른 참가자들에게 자신을 소개하는 글을 작성해주세요. <br>
+	취미, 관심사 등 자신에 대해 다른 참가자들과 나누고 싶은 내용을 자유롭게 작성해주세요. <br>
+        <b>100자 이상 500자 이내로 작성해주세요.</b>
+	<br><br>	
+	<textarea id="description" autocomplete="off" /></textarea><br>
+	<span id="count">남은 글자 수: 500</span><br><br>
+	<button type="submit" id="submit_text">확인</button>
+</div>	
+
+
+
+<div id="fb_intro" style="display:none;" class="instr">
+<!-- 
+/* 
+  
+**Task instructions**
+---------
+You can edit the instructions text. The prompt to try and form an impression of the other players is recommended in all ostacism paradigms. Defining the action of "liking" is also recommended. The information regarding task duration can be adjusted to match the actual duration you have set.
+
+*/ 
+-->  <h3>그룹 활동 안내</h3>
+  잠시 후 다른 참가자들과 연결되면 각 참가자가 작성한 자기소개를 확인할 수 있습니다.
+  <br><br>
+
+  다른 참가자들의 자기소개를 읽고, 마음에 드는 소개에는 <b>'좋아요'</b> 버튼을 눌러 반응할 수 있습니다.
+  <br><br>
+
+  다른 참가자들의 자기소개를 읽으면서 각 참가자가 어떤 사람일지 생각해보세요.<br>
+  실제로 만난다면 어떤 모습이나 목소리일지, 어떤 사람일지,<br>
+  나와는 얼마나 잘 어울릴 것 같은지 등을 자유롭게 생각해보시면 됩니다.
+  <br><br>
+
+  그룹 활동은 <b>3분 동안</b> 진행됩니다.<br>
+  활동이 진행되는 동안 다른 페이지로 이동하거나 다른 작업을 하지 말고 활동에 집중해주세요.<br>
+  활동이 끝난 후 활동과 관련된 몇 가지 질문이 제시됩니다.
+  <br><br>
+
+  <b>안내 내용을 모두 이해하셨다면 아래 버튼을 눌러 다른 참가자들과 연결해주세요.</b>
+  <br><br>
+  <button type="submit"  id="submit_fb_intro">연결하기</button>
+</div>
+
+
+
+<div id="fb_login" style="display:none;" class="instr">
+  <h3>다른 참가자들과 연결 중입니다</h3>
+  그룹의 다른 참가자들과 연결하고 있습니다. 잠시만 기다려주세요.<br><br>
+  <img class="load" src='ajax-loader.gif' id="loader">
+  <div id="msg_all_done" style="display:none;">
+  <br>
+  	<b>모든 참가자와 연결되었습니다. 이제 그룹 활동을 시작할 수 있습니다.</b><br><br>
+  	<button type="submit"  id="submit_fb_login">계속</button>
+  </div>
+</div>
+
+
+<!-- 
+/* 
+  
+**In-task instructions and timer**
+---------
+You can edit the instructions text. 
+
+*/ 
+-->
+<div id="task" style="display:none;">
+	<div id="countdown"><span class="secs" style="display: none;"></span>마음에 드는 자기소개에는 '좋아요'를 누를 수 있습니다.<br><br>남은 시간:<br><span id="timer" class="cntr label label-info"></span>
+	<br>
+	<button type="submit" id='final-continue' style="display:none;">계속</button>	
+	</div>
+</div>
+
+
+<script type="template/text" id="usertmp">
+  {{#posts}}
+    
+    <div class="entry">
+    <div class="tophalf">
+
+    	<img src="{{avatar}}" class="avatar">
+    	<h3>{{username}}</h3>
+
+    	<div class="main">
+    		<p>{{text}}</p>
+    	</div>
+
+    	<br style="clear:both;">
+
+    </div>	
+
+    <div class="bottomhalf">
+    	좋아요 <span class="badge badge-custom userslikes" data-likes="{{likes}}" data-usernames="{{usernames}}">0</span>
+    </div>
+    </div>
+
+  {{/posts}}  
+</script>
+
+
+<script type="template/text" id="otherstmp">
+  {{#posts}}
+    <div class="entry">
+    <div class="tophalf">
+
+    	<img src="{{avatar}}" class="avatar">
+        <h3>{{username}}</h3>
+    	
+    	<div class="main">
+    		
+    		<p>{{text}}</p>
+    	</div>
+
+    	<br style="clear:both;">
+
+    </div>	
+
+    <div class="bottomhalf">
+    	좋아요 <span class="badge badge-custom otherslikes" data-likes="{{likes}}">0</span>
+    	<button type="submit" class="btn pull-right btn-like btn-custom btn-deround">좋아요 <i class="icon-thumbs-up icon-white"></i></button>
+    </div>
+
+    </div>
+  {{/posts}}  
+</script>
+
+
+</body>
+</html>

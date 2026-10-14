@@ -1,0 +1,157 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>아리 · AI 에이전트</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f0f2f6;font-family:'Malgun Gothic',Arial,sans-serif;color:#202735}.chat{height:100dvh;max-width:1000px;margin:auto;background:white;display:flex;flex-direction:column;box-shadow:0 0 25px #24314a12}.header{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid #e8ebf0;background:#fff}.avatar{height:42px;width:42px;display:grid;place-items:center;background:linear-gradient(135deg,#eee9fa,#dbe6f7);border-radius:50%;font-size:19px;font-weight:700;color:#53608c}.name{font-size:18px;font-weight:700}.sub{font-size:12px;color:#64748b;margin-top:4px}.messages{flex:1;overflow:auto;padding:22px 32px 35px;scroll-behavior:auto}.bubble{padding:11px 15px;border-radius:16px;max-width:min(80%,620px);width:fit-content;line-height:1.6;margin:9px 0;font-size:15px;white-space:pre-wrap;overflow-wrap:anywhere}.bot{background:#f3f4f7;border-bottom-left-radius:4px}.user{background:#e0eafd;margin-left:auto;border-bottom-right-radius:4px}.controls{padding:16px 20px;border-top:1px solid #e8ebf0;background:white;display:grid;gap:9px;max-height:30vh;overflow:auto}.choice{background:#fff;border:1px solid #cbd5e1;border-radius:12px;padding:12px 14px;font-size:15px;text-align:left;cursor:pointer;color:#202735}.choice:hover{background:#eff6ff;border-color:#93b4e6}.choice:disabled{opacity:.5;cursor:default}.free{display:flex;gap:9px}.free textarea{flex:1;resize:vertical;min-height:58px;max-height:150px;padding:12px;font:inherit;border-radius:12px;border:1px solid #cbd5e1}.send{border:0;border-radius:12px;background:#316cce;color:#fff;padding:0 18px;cursor:pointer}.status{font-size:13px;color:#64748b;text-align:center}.hidden{display:none!important}</style></head><body><main class="chat"><header class="header"><div class="avatar" aria-hidden="true">아</div><div><div class="name">아리</div></div></header><section class="messages" id="messages" aria-live="polite"></section><section class="controls" id="controls"></section></main><script>
+const params=new URLSearchParams(location.search);const participant=params.get('p');const condition=params.get('c');
+// Current approved SMO task runs exclusion only (SMO condition 1).
+// If T1 passes its original c as smo_condition, preserve it; otherwise use 1 for this exclusion-only design.
+const smoCondition=params.get('smo_condition') || '1';
+const T2_URL='https://qualtricsxmzgmxbmy37.qualtrics.com/jfe/form/SV_2u9qmh05wpw2RPE';
+function t2Url(){const u=new URL(T2_URL);u.searchParams.set('p',participant);u.searchParams.set('c',smoCondition);u.searchParams.set('ai_condition',condition);u.searchParams.set('ari_completed','1');return u.toString();}
+const messages=document.getElementById('messages'),controls=document.getElementById('controls');
+const questions=[
+  {
+    "q": "조금 전 온라인 활동에 총 몇 명의 참가자가 접속해 있었나요?",
+    "choices": [
+      "2명",
+      "3명",
+      "4명",
+      "5명 이상"
+    ],
+    "social": [
+      "알려주셔서 감사합니다. 그럼 방금 활동에 대해 조금 더 이야기해볼게요."
+    ],
+    "neutral": "응답해주셔서 감사합니다."
+  },
+  {
+    "q": "나와 같은 프로필 이미지를 선택한 참가자가 있었나요?",
+    "choices": [
+      "예",
+      "아니요",
+      "잘 모르겠다"
+    ],
+    "social": [
+      "같은 프로필 이미지를 선택한 참가자가 있었군요. 활동 중에 눈에 띄었을 수도 있겠어요.",
+      "같은 프로필 이미지를 선택한 참가자는 없었다고 기억하시는군요.",
+      "같은 이미지를 선택한 사람이 있었는지는 확실하지 않으시군요. 여러 프로필을 보다 보면 기억하기 어려울 수도 있죠."
+    ],
+    "neutral": "응답을 확인했습니다."
+  },
+  {
+    "q": "그럼 다른 참가자들의 프로필에 ‘좋아요’를 누를 수 있었나요?",
+    "choices": [
+      "예",
+      "아니요",
+      "잘 모르겠다"
+    ],
+    "social": [
+      "다른 참가자들의 프로필에 ‘좋아요’를 누를 수 있었군요. 다른 참가자들에게 반응을 표현할 수 있는 활동이었네요.",
+      "다른 참가자들의 프로필에 ‘좋아요’를 누를 수 없었다고 기억하시는군요.",
+      "‘좋아요’를 누를 수 있었는지는 정확히 기억나지 않으시는군요. 활동 중에는 그런 부분을 놓칠 수도 있죠."
+    ],
+    "neutral": "네, 확인했습니다."
+  },
+  {
+    "q": "다른 사람들이 내 프로필에 충분히 반응했다고 느끼셨나요?",
+    "choices": [
+      "전혀 그렇지 않았다",
+      "그렇지 않았다",
+      "보통이다",
+      "그랬다",
+      "매우 그랬다"
+    ],
+    "social": [
+      "다른 사람들의 반응이 전혀 충분하지 않았다고 느끼셨군요. 기대했던 만큼의 반응을 받지 못했다고 느끼셨을 수도 있겠어요.",
+      "다른 사람들의 반응이 충분하지 않았다고 느끼셨군요. 조금 더 많은 반응을 기대하셨을 수도 있겠어요.",
+      "다른 사람들의 반응이 보통 정도라고 느끼셨군요. 특별히 충분하거나 부족하다고 느끼지는 않으셨던 것 같아요.",
+      "다른 사람들이 내 프로필에 충분히 반응했다고 느끼셨군요. 받은 반응이 대체로 만족스러우셨을 수도 있겠어요.",
+      "다른 사람들이 내 프로필에 아주 충분히 반응했다고 느끼셨군요. 다른 사람들의 반응을 긍정적으로 경험하신 것 같아요."
+    ],
+    "neutral": "알겠습니다."
+  },
+  {
+    "q": "그럼 다른 사람들에게 무시되거나 소외되었다고 느끼셨나요?",
+    "choices": [
+      "전혀 그렇지 않았다",
+      "그렇지 않았다",
+      "보통이다",
+      "그랬다",
+      "매우 그랬다"
+    ],
+    "social": [
+      "무시되거나 소외되었다는 느낌은 전혀 없으셨군요. 다른 사람들의 반응을 크게 부정적으로 받아들이지는 않으셨던 것 같아요.",
+      "무시되거나 소외되었다는 느낌은 크지 않으셨군요. 활동을 비교적 편안하게 경험하셨을 수도 있겠어요.",
+      "무시되거나 소외되었다는 느낌을 어느 정도 받으셨군요. 다른 사람들의 반응이 조금 아쉽게 느껴졌을 수도 있겠어요.",
+      "다른 사람들에게 무시되거나 소외되었다고 느끼셨군요. 다른 사람들의 반응이 기대와 다르면 속상하거나 불편한 마음이 들 수도 있겠어요. ",
+      "다른 사람들에게 무시되거나 소외되었다는 느낌이 상당히 강하셨군요. 그런 상황에서는 마음이 많이 불편하거나 속상할 수도 있을 것 같아요."
+    ],
+    "neutral": "그랬군요. 확인했습니다."
+  },
+  {
+    "q": "온라인 활동을 하는 동안 자기 자신에 대해 전반적으로 어떻게 느끼셨나요?",
+    "choices": [
+      "매우 부정적으로 느꼈다",
+      "부정적으로 느꼈다",
+      "보통이다",
+      "긍정적으로 느꼈다",
+      "매우 긍정적으로 느꼈다"
+    ],
+    "social": [
+      "활동 중 자신을 매우 부정적으로 느끼셨군요. 다른 사람들과 상호작용하는 과정에서 자신에 대해 그런 느낌이 들었다면 마음이 많이 불편했을 수도 있겠어요. 그렇게 느끼셨을 수도 있다는 점이 이해돼요.",
+      "활동 중 자신을 부정적으로 느끼셨군요. 다른 사람들의 반응을 경험하면서 스스로에 대해 부정적인 느낌이 들었다면 마음이 편하지는 않았을 것 같아요. 그런 마음이 드는 것도 이해돼요.",
+      "자기 자신에 대해 특별히 긍정적이거나 부정적으로 느끼지는 않으셨군요. 활동 중에도 자신에 대한 느낌은 비교적 중립적이셨던 것 같아요.",
+      "활동 중 자신을 긍정적으로 느끼셨군요. 다른 사람들의 반응과는 별개로 자신에 대해 좋은 느낌을 유지하셨을 수도 있겠어요.",
+      "활동 중 자신을 매우 긍정적으로 느끼셨군요. 자신에 대한 긍정적인 느낌이 뚜렷하셨던 것 같아요."
+    ],
+    "neutral": "응답해주셔서 감사합니다."
+  },
+  {
+    "q": "그럼 다른 참가자들의 반응이 얼마나 신경 쓰였나요?",
+    "choices": [
+      "전혀 신경 쓰이지 않았다",
+      "별로 신경 쓰이지 않았다",
+      "보통이다",
+      "신경 쓰였다",
+      "매우 신경 쓰였다"
+    ],
+    "social": [
+      "다른 참가자들의 반응이 전혀 신경 쓰이지 않으셨군요. 다른 사람들의 반응에 크게 영향을 받지 않으셨던 것 같아요.",
+      "다른 참가자들의 반응이 크게 신경 쓰이지는 않으셨군요. 활동 중에도 다른 사람들의 반응을 많이 의식하지는 않으셨던 것 같아요.",
+      "다른 참가자들의 반응이 어느 정도 신경 쓰이셨군요. 다른 사람들이 어떻게 반응하는지 관심이 가셨을 수도 있겠어요.",
+      "다른 참가자들의 반응이 신경 쓰이셨군요. 내 프로필에 어떤 반응이 돌아올지 궁금해지는 상황이었을 수도 있겠어요. 다른 사람들의 반응을 의식하게 되는 것도 충분히 이해돼요.",
+      "다른 참가자들의 반응을 많이 의식하셨군요. 다른 사람들이 나를 어떻게 보고 있을지 신경이 쓰이는 경험이었을 수도 있겠어요. 그런 상황에서 상대방의 반응에 민감해지는 것도 충분히 이해돼요."
+    ],
+    "neutral": "응답을 확인했습니다."
+  },
+  {
+    "q": "온라인 활동을 하면서 느꼈던 점을 자유롭게 말씀해 주세요.",
+    "free": true,
+    "social": [
+      "느낀 점을 직접 이야기해 주셔서 감사해요. 많은 도움이 되었어요."
+    ],
+    "neutral": "네, 응답을 확인했습니다."
+  }
+];
+let turn=0,busy=false;const answers=[];const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function scrollEnd(){requestAnimationFrame(()=>{messages.scrollTop=messages.scrollHeight})}
+function bubble(t,who){const el=document.createElement('div');el.className='bubble '+who;el.textContent=t;messages.append(el);scrollEnd();return el}
+// Split scripted bot text into separate sentence bubbles, without changing the words.
+function sentences(t){return (t.match(/[^.!?。！？]+[.!?。！？]+|[^.!?。！？]+$/g)||[t]).map(x=>x.trim()).filter(Boolean)}
+async function bot(t){for(const sentence of sentences(t)){const typing=bubble('● ● ●','bot');await wait(850);typing.remove();bubble(sentence,'bot');await wait(520)}scrollEnd()}
+
+async function next(){
+ if(turn>=questions.length){
+   // No chat answers stored; proceed after all 8 turns
+   await bot('대화는 여기까지입니다. 응답해주셔서 감사합니다.');
+   controls.innerHTML='<div class="status">대화가 완료되었습니다. 다음 설문으로 이동합니다.</div>';scrollEnd();
+    await wait(1800);
+    location.assign(t2Url());return}
+
+ const q=questions[turn];controls.replaceChildren();await bot(q.q);await wait(1000);
+ if(q.free){const wrap=document.createElement('div');wrap.className='free';const ta=document.createElement('textarea');ta.placeholder='느끼신 점을 입력해 주세요.';ta.maxLength=2000;const send=document.createElement('button');send.className='send';send.textContent='전송';send.onclick=()=>{const value=ta.value.trim();if(value)respond(value,0)};wrap.append(ta,send);controls.append(wrap)}
+ else q.choices.forEach((c,i)=>{const b=document.createElement('button');b.className='choice';b.textContent=c;b.onclick=()=>respond(c,i);controls.append(b)});
+ scrollEnd();
+}
+async function respond(value,index){if(busy)return;busy=true;controls.querySelectorAll('button,textarea').forEach(x=>x.disabled=true);answers.push({turn:turn+1,answer:value});bubble(value,'user');controls.replaceChildren();const q=questions[turn];const response=condition==='social'?(q.social[index]??q.social[0]):q.neutral;
+
+await bot(response);turn++;await wait(650);busy=false;await next()}
+async function start(){if(!/^[1-9][0-9]{0,5}$/.test(participant||'')||!['social','neutral'].includes(condition)||!['1','2','3'].includes(smoCondition)){controls.innerHTML='<div class="status">실험 링크에 참가자 ID(p)와 조건(c=social 또는 neutral)이 필요합니다. 연구용 링크를 확인해 주세요.</div>';return}await bot('안녕하세요. 저는 AI 에이전트 ‘아리’ 입니다.');await bot('지금부터 조금 전 온라인 활동에서 경험하신 내용에 대해 몇 가지 질문을 드릴게요.');await bot('각 질문을 읽고 당시의 경험과 가장 가까운 응답을 선택해 주세요.');next()}start();
+</script></body></html>
