@@ -36,8 +36,31 @@ If you don't have experience with programming, it is important that you alter on
 <body oncontextmenu="return false;">
 <div class="container">
 
+<div id="consent" style="display:none;" class="instr">
+  <h3>연구 참여 동의</h3>
 
+  본인은 제공받은 연구 설명문을 읽고
+  연구의 목적과 절차, 예상되는 불편감,
+  개인정보 처리 및 참여 철회에 관한
+  내용을 확인하였습니다.
+  <br><br>
 
+  본 연구에 자발적으로 참여하는 것에
+  동의하십니까?
+  <br><br>
+
+  <label>
+    <input type="checkbox" id="agree_consent">
+    연구 참여에 동의합니다.
+  </label>
+
+  <br>
+
+  <button type="button" id="submit_consent">
+    동의하고 계속
+  </button>
+</div>
+	
 <div id="intro" style="display:none;" class="instr">
  <!-- 
 /* 
