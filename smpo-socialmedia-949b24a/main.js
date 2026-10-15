@@ -60,6 +60,25 @@ $(function() {
   // -------------------
   
   
+  // 연구 참여 동의 화면
+  function init_consent() {
+    $('#consent').show();
+
+    $('#submit_consent').on('click', function() {
+      if (!$('#agree_consent').is(':checked')) {
+        alertify.log(
+          '연구 참여에 동의하셔야 다음 단계로 진행할 수 있습니다.',
+          'error'
+        );
+        return;
+      }
+
+      $('#consent').hide();
+      init_intro();
+    });
+  }
+
+	
   // **Slide:** **Intro**     
   // With instructions regarding the task. The intro container is shown, the continue calls the next slide when clicked.
   function init_intro() {
@@ -478,7 +497,7 @@ $(function() {
   get_params();
   adjust_to_condition();
 
-  // Start with the intro slide
+  // 연구 참여 동의 화면부터 시작
   init_intro();
 
 });
