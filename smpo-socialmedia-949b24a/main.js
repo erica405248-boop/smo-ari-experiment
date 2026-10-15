@@ -498,6 +498,6 @@ $(function() {
   adjust_to_condition();
 
   // 연구 참여 동의 화면부터 시작
-  init_intro();
+  init_consent();
 
 });
