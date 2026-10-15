@@ -492,6 +492,7 @@ $(function() {
     return 'Are you sure you want to quit the experiment completely?';
   });   
 
+  
   // Set Settings, get Participant No. and Condition No.
   set_settings();
   get_params();
@@ -501,3 +502,4 @@ $(function() {
   init_consent();
 
 });
+
